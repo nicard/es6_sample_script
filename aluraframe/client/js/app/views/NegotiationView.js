@@ -1,14 +1,6 @@
-class NegotiationView {
+class NegotiationView extends View {
 
-    constructor(element){
-        this._element = element;
-    }
-
-    update(listModel){
-        this._element.innerHTML = this._template(listModel);
-    }
-
-    _template(listModel){
+    template(listModel){
         return `
         <table class="table table-hover table-bordered">
             <thead>
@@ -36,7 +28,7 @@ class NegotiationView {
             <tfoot>           
                 <td colspan="3"></td>
                 <td>
-                    ${listModel.list.reduce((total, n) => total += n.volume, 0)}
+                    ${listModel.totalVolume}
                 </td>            
             </tfoot>
         </table>

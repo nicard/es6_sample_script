@@ -28,15 +28,18 @@
             <input id="valor" type="number" class="form-control"  min="0.01" step="0.01" value="0.0" required />
         </div>
         
-        <button class="btn btn-primary" type="submit">Incluir</button>
+        <button class="btn btn-primary" type="submit">Add</button>
     </form>
     
     <div class="text-center">
-        <button class="btn btn-primary text-center" type="button">
-            Importar Negociações
+        <button class="btn btn-primary text-center" type="button" onclick="negotiationController.import(event)">
+            Import Negociation
         </button>
-        <button class="btn btn-primary text-center" type="button">
-            Apagar
+        <button class="btn btn-danger text-center" type="button">
+            Remove
+        </button>
+        <button class="btn btn-danger text-center" type="button" onclick="negotiationController.removeAll(event);">
+            Remove All
         </button>
     </div> 
     <br>
@@ -45,13 +48,19 @@
     <div id="negotiationView"></div>
 
     <script src="js/app/helpers/DateHelper.js"></script>
+    <script src="js/app/helpers/Bind.js"></script>
 
+    <script src="js/app/views/View.js"></script>
     <script src="js/app/views/NegotiationView.js"></script>
     <script src="js/app/views/MessageView.js"></script>
 
     <script src="js/app/models/Negotiation.js"></script>
     <script src="js/app/models/NegotiationList.js"></script>
     <script src="js/app/models/Message.js"></script>
+
+    <script src="js/app/services/ProxyFactoryService.js"></script>
+    <script src="js/app/services/NegotiationService.js"></script>
+    <script src="js/app/services/HttpService.js"></script>
 
     <script src="js/app/controllers/NegotiationController.js"></script>
     <script>

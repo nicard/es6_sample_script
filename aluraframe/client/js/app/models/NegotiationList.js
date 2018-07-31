@@ -11,4 +11,12 @@ class NegotiationList {
         return [].concat(this._negotiationList);
     }
 
+    get totalVolume(){
+        return this._negotiationList.reduce((total, n) => total += n.volume, 0);
+    }
+
+    removeAll(){
+        this._negotiationList = [];
+    }
+
 }
