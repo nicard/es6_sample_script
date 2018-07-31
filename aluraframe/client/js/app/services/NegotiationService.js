@@ -14,7 +14,7 @@ class NegotiationService {
                 })
                 .catch(error => {
                     console.log('Server error response');
-                    console.error(xhr.responseText);
+                    console.error(error);
                     reject("Could not connect to server");
                 });
         });
@@ -30,7 +30,7 @@ class NegotiationService {
                 })
                 .catch(error => {
                     console.log('Server error response');
-                    console.error(xhr.responseText);
+                    console.error(error);
                     reject("Could not connect to server");
                 });
         });
@@ -46,7 +46,7 @@ class NegotiationService {
                 })
                 .catch(error => {
                     console.log('Server error response');
-                    console.error(xhr.responseText);
+                    console.error(error);
                     reject("Could not connect to server");
                 });
         });
@@ -60,21 +60,16 @@ class NegotiationService {
                 quantidade: negotiation.count,
                 valor: negotiation.value,
             };
+            this._httpService.post("/negociacoes", data)
+                .then((data) =>{
+                    resolve(data);
+                })
+                .catch(error => {
+                    console.log('Server error response');
+                    console.error(error);
+                    reject("Could not connect to server");
+                });
 
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "/negociacoes", true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === 4) {
-                    console.log(xhr.responseText);
-                    if (xhr.status === 200) {
-                        resolve(null);
-                    } else {
-                        reject(xhr.responseText);
-                    }
-                }
-            }
-            xhr.send(JSON.stringify(data));
         });
     }
 }
