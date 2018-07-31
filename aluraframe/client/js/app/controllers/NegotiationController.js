@@ -5,11 +5,12 @@ class NegotiationController {
         this._inputDate = $('#data');
         this._inputValue = $('#valor');
         this._inputCount = $('#quantidade');
+        this._order = '';
 
         this._negotiationList = new Bind(
             new NegotiationList(),
             new NegotiationView($('#negotiationView')),
-            'add', 'removeAll'
+            'add', 'removeAll', 'order', 'reverseOrder'
         );
 
         this._message = new Bind(
@@ -20,7 +21,15 @@ class NegotiationController {
 
 
         this._service = new NegotiationService();
-        Object.freeze(this);
+    }
+
+    orderData(column){
+        if(this._order === column) {
+         this._negotiationList.reverseOrder();
+        } else
+         this._negotiationList.order((a, b) => a[column] - b[column]);
+
+        this._order = column;
     }
 
     add(event){
@@ -37,17 +46,14 @@ class NegotiationController {
 
     import(event){
         event.preventDefault();
-
-        Promise.all([
-            this._service.getWeekNegotiation(),
-            this._service.getLastWeekNegotiation(),
-            this._service.getWeekBeforeLastNegotiation()]
-        ).then(results => {
-            results
-                .reduce((newArray, array) => newArray.concat(array),[])
-                .forEach( negotiation => this._negotiationList.add(negotiation))
-            this._message.text = "Negotations imported.";
-        }).catch(error => {this._message.text = error});
+        this._service.getNegotiations()
+            .then(data => {
+                data.forEach( negotiation => this._negotiationList.add(negotiation));
+                this._message.text = "Negotations imported.";
+            })
+            .catch(error => {
+                this._message.text = error
+            });
     }
 
     removeAll(event){

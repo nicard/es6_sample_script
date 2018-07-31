@@ -5,17 +5,18 @@
     <title>Negociações</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-theme.css">
-    
+    <!-- polyfill  es6 -->
+    <script src="js/app/polyfill/es6.js"></script>
 </head>
 <body class="container">
     
     <h1 class="text-center">Negociações</h1>
     <div id="messageView"></div>
-    <form class="form" onsubmit="negotiationController.add(event)">
+    <form class="form" onsubmit="controller.add(event)">
         
         <div class="form-group">
             <label for="data">Data</label>
-            <input type="date" id="data" class="form-control" required autofocus/>        
+            <input type="date" id="data" class="form-control" required autofocus/>
         </div>    
         
         <div class="form-group">
@@ -32,13 +33,13 @@
     </form>
     
     <div class="text-center">
-        <button class="btn btn-primary text-center" type="button" onclick="negotiationController.import(event)">
+        <button class="btn btn-primary text-center" type="button" onclick="controller.import(event)">
             Import Negociation
         </button>
         <button class="btn btn-danger text-center" type="button">
             Remove
         </button>
-        <button class="btn btn-danger text-center" type="button" onclick="negotiationController.removeAll(event);">
+        <button class="btn btn-danger text-center" type="button" onclick="controller.removeAll(event);">
             Remove All
         </button>
     </div> 
@@ -64,7 +65,7 @@
 
     <script src="js/app/controllers/NegotiationController.js"></script>
     <script>
-        let negotiationController = new NegotiationController();
+        var controller = new NegotiationController();
     </script>
 </body>
 </html>

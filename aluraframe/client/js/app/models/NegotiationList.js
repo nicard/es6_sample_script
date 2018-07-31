@@ -19,4 +19,11 @@ class NegotiationList {
         this._negotiationList = [];
     }
 
+    order(criteria){
+        this._negotiationList.sort(criteria);
+    }
+
+    reverseOrder() {
+        this._negotiationList.reverse();
+    }
 }
