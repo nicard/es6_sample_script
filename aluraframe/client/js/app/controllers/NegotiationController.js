@@ -21,6 +21,18 @@ class NegotiationController {
 
 
         this._service = new NegotiationService();
+
+        ConnectionFactory.getConnection()
+            .then(connection => new NegotiationDAO(connection))
+            .then(dao => dao.listAll())
+            .then(negotiations => negotiations.forEach(
+                negotiation => this._negotiationList.add(negotiation)
+            ))
+            .catch( error => {
+                this._message.text = error
+            });
+
+
     }
 
     orderData(column){
@@ -37,11 +49,17 @@ class NegotiationController {
         let negotiationData = this._createNegotiation();
         this._service.add(negotiationData)
             .then(()=>{
-                this._negotiationList.add(negotiationData);
-                this._message.text = "Negotiation Added";
+                ConnectionFactory.getConnection().then(connection => {
+                   new NegotiationDAO(connection).add(negotiationData).then(() => {
+                       this._negotiationList.add(negotiationData);
+                       this._clearForm();
+                       this._message.text = "Negotiation Added";
+                   }).catch( error => {
+                       this._message.text = error
+                   });
+                });
             })
             .catch(error => {this._message.text = error});
-        this._clearForm();
     }
 
     import(event){
@@ -58,15 +76,24 @@ class NegotiationController {
 
     removeAll(event){
         event.preventDefault();
-        this._negotiationList.removeAll();
-        this._message.text = "Negotiation's removed.";
+        ConnectionFactory.getConnection()
+            .then(connection => new NegotiationDAO(connection))
+            .then(dao => dao.removeAll())
+            .then(result => {
+                    this._negotiationList.removeAll();
+                    this._message.text = result;
+                }
+            )
+            .catch( error => {
+                this._message.text = error
+            });
     }
 
     _createNegotiation(){
         return new Negotiation(
             DateHelper.textToDate(this._inputDate.value),
-            this._inputValue.value,
-            this._inputCount.value
+            parseInt(this._inputCount.value),
+            parseFloat(this._inputValue.value)
         );
     }
 
@@ -76,4 +103,5 @@ class NegotiationController {
         this._inputCount.value = 1;
         this._inputDate.focus();
     }
+
 }
