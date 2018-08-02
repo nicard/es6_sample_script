@@ -4,6 +4,15 @@ class NegotiationService {
         this._httpService = new HttpService();
     }
 
+    list(){
+        return ConnectionFactory.getConnection()
+            .then(connection => new NegotiationDAO(connection))
+            .then(dao => dao.listAll())
+            .catch(error => {
+                throw new Error("It was not possible to get negotiations");
+            });
+    }
+
     getNegotiations(){
         return Promise.all([
             this.getWeekNegotiation(),
@@ -13,6 +22,16 @@ class NegotiationService {
             return results
                 .reduce((newArray, array) => newArray.concat(array),[]);
         }).catch(error => {throw new Error(error)});
+    }
+
+    importNegotiations(negotiationsList){
+        return this.getNegotiations()
+            .then(data => data.filter( negotiation => !negotiationsList.list.some(
+                index => JSON.stringify(negotiation) === JSON.stringify(index)
+            )))
+            .catch(error => {
+                this._message.text = error
+            });
     }
 
     getWeekNegotiation(){
@@ -61,7 +80,6 @@ class NegotiationService {
     }
 
     add(negotiation){
-
         let data = {
             data: DateHelper.dateToText(negotiation.date),
             quantidade: negotiation.count,
@@ -69,7 +87,14 @@ class NegotiationService {
         };
         return this._httpService.post("/negociacoes", data)
             .then((data) =>{
-                return data;
+                ConnectionFactory.getConnection().then(connection => {
+                    new NegotiationDAO(connection).add(negotiation).then(() => {
+                        return data;
+                    }).catch( error => {
+                        console.log(error.result.name);
+                        throw new Error("Could not connect to server");
+                    });
+                });
             })
             .catch(error => {
                 console.log('Server error response');
@@ -77,5 +102,15 @@ class NegotiationService {
                 throw new Error("Could not connect to server");
             });
 
+    }
+
+    removeAll(){
+        return  ConnectionFactory.getConnection()
+            .then(connection => new NegotiationDAO(connection))
+            .then(dao => dao.removeAll())
+            .catch(error => {
+                console.log(error);
+                throw new Error("it was not possible to delete negotiations");
+            });
     }
 }

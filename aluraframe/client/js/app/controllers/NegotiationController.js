@@ -21,18 +21,19 @@ class NegotiationController {
 
 
         this._service = new NegotiationService();
+        this._init();
+    }
 
-        ConnectionFactory.getConnection()
-            .then(connection => new NegotiationDAO(connection))
-            .then(dao => dao.listAll())
+    _init(){
+        this._service
+            .list()
             .then(negotiations => negotiations.forEach(
                 negotiation => this._negotiationList.add(negotiation)
             ))
-            .catch( error => {
-                this._message.text = error
-            });
+            .catch( error => this._message.text = error);
 
-
+        setInterval(() => this._import(), 50000)
+        this._import();
     }
 
     orderData(column){
@@ -47,30 +48,21 @@ class NegotiationController {
     add(event){
         event.preventDefault();
         let negotiationData = this._createNegotiation();
-        this._service.add(negotiationData)
+        this._service
+            .add(negotiationData)
             .then(()=>{
-                ConnectionFactory.getConnection().then(connection => {
-                   new NegotiationDAO(connection).add(negotiationData).then(() => {
-                       this._negotiationList.add(negotiationData);
-                       this._clearForm();
-                       this._message.text = "Negotiation Added";
-                   }).catch( error => {
-                       this._message.text = error
-                   });
-                });
+                this._negotiationList.add(negotiationData);
+                this._clearForm();
+                this._message.text = "Negotiation Added";
             })
             .catch(error => {this._message.text = error});
     }
 
-    import(event){
-        event.preventDefault();
-        this._service.getNegotiations()
-            .then(data => data.filter( negotiation => !this._negotiationList.list.some(
-                index => JSON.stringify(negotiation) === JSON.stringify(index)
-            )))
+    _import(){
+        this._service
+            .importNegotiations(this._negotiationList)
             .then(data => {
                 data.forEach( negotiation => this._negotiationList.add(negotiation));
-                this._message.text = "Negotations imported.";
             })
             .catch(error => {
                 this._message.text = error
@@ -79,9 +71,8 @@ class NegotiationController {
 
     removeAll(event){
         event.preventDefault();
-        ConnectionFactory.getConnection()
-            .then(connection => new NegotiationDAO(connection))
-            .then(dao => dao.removeAll())
+        this._service
+            .removeAll()
             .then(result => {
                     this._negotiationList.removeAll();
                     this._message.text = result;
