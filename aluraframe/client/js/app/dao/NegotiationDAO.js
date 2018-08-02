@@ -22,7 +22,9 @@ class NegotiationDAO {
     }
 
     remove(negotiation){
-
+        /**
+         * @todo remove single negotiation
+         */
     }
 
     removeAll(){

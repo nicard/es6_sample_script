@@ -65,6 +65,9 @@ class NegotiationController {
     import(event){
         event.preventDefault();
         this._service.getNegotiations()
+            .then(data => data.filter( negotiation => !this._negotiationList.list.some(
+                index => JSON.stringify(negotiation) === JSON.stringify(index)
+            )))
             .then(data => {
                 data.forEach( negotiation => this._negotiationList.add(negotiation));
                 this._message.text = "Negotations imported.";
