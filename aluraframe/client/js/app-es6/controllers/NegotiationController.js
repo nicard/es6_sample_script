@@ -1,3 +1,13 @@
+import {NegotiationList} from "../models/NegotiationList";
+import {Message} from "../models/Message";
+import {Negotiation} from "../models/Negotiation";
+import {MessageView} from "../views/MessageView";
+import {NegotiationView} from "../views/NegotiationView";
+import {ConnectionFactory} from "../services/ConnectionFactory";
+import {DateHelper} from "../helpers/DateHelper";
+import {Bind} from "../helpers/Bind";
+import {NegotiationService} from "../services/NegotiationService";
+
 class NegotiationController {
 
     constructor(){
@@ -39,6 +49,7 @@ class NegotiationController {
     }
 
     orderData(column){
+        console.log('order for '+column);
         if(this._order === column) {
          this._negotiationList.reverseOrder();
         } else
@@ -103,4 +114,9 @@ class NegotiationController {
         this._inputDate.focus();
     }
 
+}
+
+let negotiationController = new NegotiationController();
+export function currentInstance(){
+    return negotiationController;
 }

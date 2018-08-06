@@ -1,4 +1,4 @@
-class ProxyFactoryService extends View{
+export class ProxyFactoryService {
 
     static create(object, props, action){
         return new Proxy(object, {

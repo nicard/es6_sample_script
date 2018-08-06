@@ -12,7 +12,7 @@
     
     <h1 class="text-center">Negociações</h1>
     <div id="messageView"></div>
-    <form class="form" onsubmit="controller.add(event)">
+    <form class="form">
         
         <div class="form-group">
             <label for="data">Data</label>
@@ -36,7 +36,7 @@
         <button class="btn btn-danger text-center" type="button">
             Remove
         </button>
-        <button class="btn btn-danger text-center" type="button" onclick="controller.removeAll(event);">
+        <button class="btn btn-danger text-center" type="button">
             Remove All
         </button>
     </div> 
@@ -44,28 +44,20 @@
     <br>
 
     <div id="negotiationView"></div>
-    <script src="js/app/polyfill/fetch.js" type="module"></script>
-    <script src="js/app/helpers/DateHelper.js"></script>
-    <script src="js/app/helpers/Bind.js"></script>
-
-    <script src="js/app/views/View.js"></script>
-    <script src="js/app/views/NegotiationView.js"></script>
-    <script src="js/app/views/MessageView.js"></script>
-
-    <script src="js/app/models/Negotiation.js"></script>
-    <script src="js/app/models/NegotiationList.js"></script>
-    <script src="js/app/models/Message.js"></script>
-
-    <script src="js/app/services/ProxyFactoryService.js"></script>
-    <script src="js/app/services/NegotiationService.js"></script>
-    <script src="js/app/services/HttpService.js"></script>
-    <script src="js/app/services/ConnectionFactory.js"></script>
-
-    <script src="js/app/dao/NegotiationDAO.js"></script>
-
-    <script src="js/app/controllers/NegotiationController.js"></script>
+    <script src="node_modules/systemjs/dist/system.js"></script>
     <script>
-        var controller = new NegotiationController();
+        System.defaultJSExtensions = true;
+        System.config({
+            packages: {
+                'js/app': {
+                    format: 'register',
+                    defaultExtension: 'js'
+                }
+            }
+        });
+        System.import('js/app/boot').catch(function(err){
+            console.error(err);
+        });
     </script>
 </body>
 </html>

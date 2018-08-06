@@ -1,4 +1,4 @@
-class Negotiation {
+export class Negotiation {
     constructor(date, count, value){
         this._date = new Date(date.getTime());
         this._count = count;
