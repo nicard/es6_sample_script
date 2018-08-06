@@ -30,9 +30,11 @@ class NegotiationController {
             .then(negotiations => negotiations.forEach(
                 negotiation => this._negotiationList.add(negotiation)
             ))
-            .catch( error => this._message.text = error);
+            .catch( error => {
+                this._message.text = error
+            });
 
-        setInterval(() => this._import(), 50000)
+        setInterval(() => this._import(), 5000)
         this._import();
     }
 
@@ -59,8 +61,10 @@ class NegotiationController {
     }
 
     _import(){
-        this._service
-            .importNegotiations(this._negotiationList)
+        this._service.getNegotiations()
+            .then(data => data.filter( negotiation => !this._negotiationList.list.some(
+                index => JSON.stringify(negotiation) === JSON.stringify(index)
+            )))
             .then(data => {
                 data.forEach( negotiation => this._negotiationList.add(negotiation));
             })
@@ -71,8 +75,9 @@ class NegotiationController {
 
     removeAll(event){
         event.preventDefault();
-        this._service
-            .removeAll()
+        ConnectionFactory.getConnection()
+            .then(connection => new NegotiationDAO(connection))
+            .then(dao => dao.removeAll())
             .then(result => {
                     this._negotiationList.removeAll();
                     this._message.text = result;

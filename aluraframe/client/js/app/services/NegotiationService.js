@@ -8,9 +8,6 @@ class NegotiationService {
         return ConnectionFactory.getConnection()
             .then(connection => new NegotiationDAO(connection))
             .then(dao => dao.listAll())
-            .catch(error => {
-                throw new Error("It was not possible to get negotiations");
-            });
     }
 
     getNegotiations(){
@@ -22,16 +19,6 @@ class NegotiationService {
             return results
                 .reduce((newArray, array) => newArray.concat(array),[]);
         }).catch(error => {throw new Error(error)});
-    }
-
-    importNegotiations(negotiationsList){
-        return this.getNegotiations()
-            .then(data => data.filter( negotiation => !negotiationsList.list.some(
-                index => JSON.stringify(negotiation) === JSON.stringify(index)
-            )))
-            .catch(error => {
-                this._message.text = error
-            });
     }
 
     getWeekNegotiation(){
@@ -102,15 +89,5 @@ class NegotiationService {
                 throw new Error("Could not connect to server");
             });
 
-    }
-
-    removeAll(){
-        return  ConnectionFactory.getConnection()
-            .then(connection => new NegotiationDAO(connection))
-            .then(dao => dao.removeAll())
-            .catch(error => {
-                console.log(error);
-                throw new Error("it was not possible to delete negotiations");
-            });
     }
 }
