@@ -1,41 +1,22 @@
 class HttpService {
 
-    get(url){
-        return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', url);
-            /* Configuration */
-            xhr.onreadystatechange = () => {
-                if(xhr.readyState === 4){
-                    if(xhr.status === 200){
-                        console.log('Getting week negotiation.');
-                        resolve(JSON.parse(xhr.responseText));
-                    } else{
-                        console.log('Server error response.');
-                        console.error(xhr.responseText);
-                        reject(xhr.responseText);
-                    }
-                }
-            };
-            xhr.send();
-        });
+    _hanldeError(response){
+        if(!response.ok)
+            throw new Error(response.text());
+        return response.json();
     }
+
+
+    get(url){
+        return fetch(url)
+            .then(response => this._hanldeError(response));
+    }
+
     post(url, data){
-        return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === 4) {
-                    console.log(xhr.responseText);
-                    if (xhr.status === 200) {
-                        resolve(null);
-                    } else {
-                        reject(xhr.responseText);
-                    }
-                }
-            }
-            xhr.send(JSON.stringify(data));
-        });
+        return fetch(url, {
+            headers: { 'Content-type': 'application/json' },
+            method: 'post',
+            body: JSON.stringify(data)
+        }).then(response => this._hanldeError(response));
     }
 }
