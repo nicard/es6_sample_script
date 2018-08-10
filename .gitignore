@@ -1,3 +1,5 @@
 .idea
 node_modules
 /aluraframe/client/js/app
+/aluraframe/client/package-lock.json
+/aluraframe/server/package-lock.json
